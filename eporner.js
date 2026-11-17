@@ -235,7 +235,7 @@
                     setMessage('', false);
                 } else if (page === 1) {
                     setMessage(
-                        'Видео по вашому запросу не найдены.',
+                        'Видео по вашему запросу не найдены.',
                         true
                     );
                 } else {
@@ -451,7 +451,6 @@
             html.find('.eporner-current-cat')
                 .text(categoryTitle(currentCategory));
 
-            // Интеграция кликов и фокуса для поиска
             html.find('.eporner-btn-search')
                 .on('hover:enter click', function (e) {
                     if (e) e.stopPropagation();
@@ -479,7 +478,6 @@
                     scroll.update($(this));
                 });
 
-            // Интеграция кликов и фокуса для категорий
             html.find('.eporner-btn-cat')
                 .on('hover:enter click', function (e) {
                     if (e) e.stopPropagation();
@@ -513,7 +511,6 @@
                     scroll.update($(this));
                 });
 
-            // Передаем управление контроллеру Lampa, чтобы пульт видел кнопки сверху
             Lampa.Controller.add('content', {
                 toggle: function () {
                     Lampa.Controller.collectionSet(html.find('.selector'));
@@ -536,6 +533,11 @@
             Lampa.Controller.toggle('content');
 
             loadData(1);
+        };
+
+        // Обязательный метод start для Lampa
+        this.start = function () {
+            // Метод вызывается при активации компонента
         };
 
         this.render = function () {

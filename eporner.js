@@ -24,7 +24,7 @@
         var seenIds = Object.create(null);
 
         var categories = [
-            { title: 'Все', id: '' },
+            { title: 'Р’СЃРµ', id: '' },
             { title: 'Japanese', id: 'japanese' },
             { title: 'Amateur', id: 'amateur' },
             { title: 'MILF', id: 'milf' },
@@ -37,15 +37,15 @@
         var html = $('<div class="eporner-page">' +
             '<div class="eporner-controls">' +
                 '<div class="selector eporner-btn-search" tabindex="0">' +
-                    '🔍 Поиск' +
+                    'рџ”Ќ РџРѕРёСЃРє' +
                 '</div>' +
                 '<div class="selector eporner-btn-cat" tabindex="0">' +
-                    '📂 Категория: ' +
-                    '<span class="eporner-current-cat">Все</span>' +
+                    'рџ“‚ РљР°С‚РµРіРѕСЂРёСЏ: ' +
+                    '<span class="eporner-current-cat">Р’СЃРµ</span>' +
                 '</div>' +
             '</div>' +
             '<div class="eporner-cards-list"></div>' +
-            '<div class="eporner-empty">Загрузка каталога…</div>' +
+            '<div class="eporner-empty">Р—Р°РіСЂСѓР·РєР° РєР°С‚Р°Р»РѕРіР°вЂ¦</div>' +
         '</div>');
 
         function installStyles() {
@@ -144,7 +144,7 @@
                 return cat.id === id;
             });
 
-            return found ? found.title : 'Все';
+            return found ? found.title : 'Р’СЃРµ';
         }
 
         function setMessage(message, show) {
@@ -189,9 +189,9 @@
                 seenIds = Object.create(null);
 
                 html.find('.eporner-cards-list').empty();
-                setMessage('Загрузка каталога…', true);
+                setMessage('Р—Р°РіСЂСѓР·РєР° РєР°С‚Р°Р»РѕРіР°вЂ¦', true);
             } else {
-                setMessage('Загрузка следующих видео…', true);
+                setMessage('Р—Р°РіСЂСѓР·РєР° СЃР»РµРґСѓСЋС‰РёС… РІРёРґРµРѕвЂ¦', true);
             }
 
             var params = {
@@ -206,7 +206,7 @@
                     encodeURIComponent(params[key]);
             }).join('&');
 
-            // Используем публичный прокси для обхода CORS ограничений в приложении
+            // РСЃРїРѕР»СЊР·СѓРµРј РїСѓР±Р»РёС‡РЅС‹Р№ РїСЂРѕРєСЃРё РґР»СЏ РѕР±С…РѕРґР° CORS РѕРіСЂР°РЅРёС‡РµРЅРёР№ РІ РїСЂРёР»РѕР¶РµРЅРёРё
             var targetUrl = 'https://www.eporner.com/api/v2/video/search/?' + queryString;
             var proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
 
@@ -241,18 +241,18 @@
                     setMessage('', false);
                 } else if (page === 1) {
                     setMessage(
-                        'Видео по вашему запросу не найдены.',
+                        'Р’РёРґРµРѕ РїРѕ РІР°С€РµРјСѓ Р·Р°РїСЂРѕСЃСѓ РЅРµ РЅР°Р№РґРµРЅС‹.',
                         true
                     );
                 } else {
-                    setMessage('Больше видео нет.', true);
+                    setMessage('Р‘РѕР»СЊС€Рµ РІРёРґРµРѕ РЅРµС‚.', true);
                 }
             }).fail(function (_xhr, status) {
                 if (destroyed || status === 'abort') return;
 
                 setMessage(
-                    'Не удалось загрузить каталог. ' +
-                    'Проверь подключение и попробуй ещё раз.',
+                    'РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ РєР°С‚Р°Р»РѕРі. ' +
+                    'РџСЂРѕРІРµСЂСЊ РїРѕРґРєР»СЋС‡РµРЅРёРµ Рё РїРѕРїСЂРѕР±СѓР№ РµС‰С‘ СЂР°Р·.',
                     true
                 );
 
@@ -285,11 +285,11 @@
 
                 var seconds = Number(item.length_sec || 0);
                 var duration = seconds > 0
-                    ? Math.floor(seconds / 60) + ' мин'
+                    ? Math.floor(seconds / 60) + ' РјРёРЅ'
                     : '';
 
                 var card = Lampa.Template.get('card', {
-                    title: item.title || 'Без названия',
+                    title: item.title || 'Р‘РµР· РЅР°Р·РІР°РЅРёСЏ',
                     release_year: duration
                 });
 
@@ -429,7 +429,7 @@
 
                 if (!streamUrl) {
                     Lampa.Noty.show(
-                        'Не удалось получить прямую ссылку на видео.'
+                        'РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РїСЂСЏРјСѓСЋ СЃСЃС‹Р»РєСѓ РЅР° РІРёРґРµРѕ.'
                     );
                     return;
                 }
@@ -441,7 +441,7 @@
             }).fail(function (_xhr, status) {
                 if (!destroyed && status !== 'abort') {
                     Lampa.Noty.show(
-                        'Ошибка получения ссылки на видео.'
+                        'РћС€РёР±РєР° РїРѕР»СѓС‡РµРЅРёСЏ СЃСЃС‹Р»РєРё РЅР° РІРёРґРµРѕ.'
                     );
                 }
             }).always(function () {
@@ -466,7 +466,7 @@
                 .on('hover:enter click', function (e) {
                     if (e) e.stopPropagation();
                     Lampa.Input.edit({
-                        title: 'Поиск видео',
+                        title: 'РџРѕРёСЃРє РІРёРґРµРѕ',
                         value: currentQuery,
                         free: true,
                         nosave: true
@@ -476,7 +476,7 @@
                         Lampa.Activity.push({
                             url: '',
                             title: value
-                                ? 'Поиск: ' + value
+                                ? 'РџРѕРёСЃРє: ' + value
                                 : 'Eporner',
                             component: PLUGIN_NAME,
                             search: String(value).trim(),
@@ -503,7 +503,7 @@
                     });
 
                     Lampa.Select.show({
-                        title: 'Выберите категорию',
+                        title: 'Р’С‹Р±РµСЂРёС‚Рµ РєР°С‚РµРіРѕСЂРёСЋ',
                         items: items,
 
                         onSelect: function (selected) {
@@ -511,7 +511,7 @@
 
                             Lampa.Activity.push({
                                 url: '',
-                                title: 'Eporner — ' + selected.title,
+                                title: 'Eporner вЂ” ' + selected.title,
                                 component: PLUGIN_NAME,
                                 search: currentQuery,
                                 category: selected.id,
@@ -544,6 +544,10 @@
                     }
                 }
             });
+
+            // Р’Р°Р¶РЅРѕ: Lampa РѕР¶РёРґР°РµС‚, С‡С‚Рѕ create() РІРµСЂРЅС‘С‚ РєРѕСЂРЅРµРІРѕР№ DOM РєРѕРјРїРѕРЅРµРЅС‚Р°.
+            // Р‘РµР· return this.render() СЌРєСЂР°РЅ Р°РєС‚РёРІРЅРѕСЃС‚Рё РјРѕР¶РµС‚ РѕСЃС‚Р°С‚СЊСЃСЏ РїСѓСЃС‚С‹Рј.
+            return this.render();
         };
 
         this.start = function () {

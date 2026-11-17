@@ -1,4 +1,3 @@
-
 (function () {
     'use strict';
 
@@ -152,6 +151,7 @@
             html.find('.eporner-empty')
                 .text(message)
                 .toggle(!!show);
+            scroll.update();
         }
 
         function makeSearchQuery() {
@@ -235,7 +235,7 @@
                     setMessage('', false);
                 } else if (page === 1) {
                     setMessage(
-                        'Видео по вашему запросу не найдены.',
+                        'Видео по вашому запросу не найдены.',
                         true
                     );
                 } else {
@@ -312,18 +312,13 @@
                 }
 
                 card.on('hover:enter click', function (event) {
-                    if (
-                        event &&
-                        event.type === 'click' &&
-                        $(event.target).closest('a').length
-                    ) {
-                        return;
-                    }
-
+                    if (event) event.stopPropagation();
                     openVideo(item);
                 });
 
                 card.on('hover:focus', function () {
+                    scroll.update($(this));
+
                     var index = container.children().index(card);
                     var count = container.children().length;
 
@@ -338,6 +333,8 @@
 
                 container.append(card);
             });
+
+            scroll.update();
 
             if (Lampa.Controller && Lampa.Controller.enable) {
                 Lampa.Controller.enable('content');
@@ -421,8 +418,7 @@
 
                 if (!streamUrl) {
                     Lampa.Noty.show(
-                        'Не удалось получить прямую ссылку на видео. ' +
-                        'Возможно, API изменился или видео недоступно.'
+                        'Не удалось получить прямую ссылку на видео.'
                     );
                     return;
                 }
@@ -455,8 +451,10 @@
             html.find('.eporner-current-cat')
                 .text(categoryTitle(currentCategory));
 
+            // Интеграция кликов и фокуса для поиска
             html.find('.eporner-btn-search')
-                .on('hover:enter click', function () {
+                .on('hover:enter click', function (e) {
+                    if (e) e.stopPropagation();
                     Lampa.Input.edit({
                         title: 'Поиск видео',
                         value: currentQuery,
@@ -476,10 +474,15 @@
                             page: 1
                         });
                     });
+                })
+                .on('hover:focus', function () {
+                    scroll.update($(this));
                 });
 
+            // Интеграция кликов и фокуса для категорий
             html.find('.eporner-btn-cat')
-                .on('hover:enter click', function () {
+                .on('hover:enter click', function (e) {
+                    if (e) e.stopPropagation();
                     var items = categories.map(function (cat) {
                         return {
                             title: cat.title,
@@ -505,7 +508,32 @@
                             });
                         }
                     });
+                })
+                .on('hover:focus', function () {
+                    scroll.update($(this));
                 });
+
+            // Передаем управление контроллеру Lampa, чтобы пульт видел кнопки сверху
+            Lampa.Controller.add('content', {
+                toggle: function () {
+                    Lampa.Controller.collectionSet(html.find('.selector'));
+                },
+                left: function () {
+                    Lampa.Controller.toggle('menu');
+                },
+                right: function () {},
+                up: function () {
+                    Lampa.Controller.toggle('head');
+                },
+                down: function () {
+                    var next = Lampa.Controller.collectionFocus();
+                    if (!next) {
+                        Lampa.Controller.collectionFocus(html.find('.eporner-cards-list .card').eq(0));
+                    }
+                }
+            });
+
+            Lampa.Controller.toggle('content');
 
             loadData(1);
         };

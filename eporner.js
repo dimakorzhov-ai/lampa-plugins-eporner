@@ -206,33 +206,32 @@
 
         Lampa.Component.add('eporner_catalog', EpornerComponent);
 
-        // Безопасное добавление пункта в меню через слушатель интерфейса
-        Lampa.Listener.follow('full', function (e) {
-            if (e.type === 'menu') {
-                var menu_list = e.target.find('.menu__list');
-                if (menu_list.find('.eporner-menu-item').length === 0) {
-                    var menu_item = $(`
-                        <li class="menu__item eporner-menu-item selector">
-                            <div class="menu__ico">
-                                <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM8 15l5-3-5-3v6z"/></svg>
-                            </div>
-                            <div class="menu__text">Eporner</div>
-                        </li>
-                    `);
-                    
-                    menu_item.on('hover:enter', function () {
-                        Lampa.Activity.push({
-                            url: '',
-                            title: 'Eporner',
-                            component: 'eporner_catalog',
-                            page: 1
-                        });
+        // Принудительное добавление пункта в меню при любом изменении экрана
+        function addMenu() {
+            if ($('.menu .menu__list').length && $('.menu .menu__list').find('.eporner-menu-item').length === 0) {
+                var menu_item = $(`
+                    <li class="menu__item eporner-menu-item selector">
+                        <div class="menu__ico">
+                            <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM8 15l5-3-5-3v6z"/></svg>
+                        </div>
+                        <div class="menu__text">Eporner</div>
+                    </li>
+                `);
+                
+                menu_item.on('hover:enter', function () {
+                    Lampa.Activity.push({
+                        url: '',
+                        title: 'Eporner',
+                        component: 'eporner_catalog',
+                        page: 1
                     });
+                });
 
-                    menu_list.append(menu_item);
-                }
+                $('.menu .menu__list').append(menu_item);
             }
-        });
+        }
+
+        setInterval(addMenu, 1000);
     }
 
     if (window.appready) {

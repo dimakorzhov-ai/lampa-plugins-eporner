@@ -151,7 +151,10 @@
             html.find('.eporner-empty')
                 .text(message)
                 .toggle(!!show);
-            scroll.update();
+
+            try {
+                if (scroll && scroll.update) scroll.update();
+            } catch (e) {}
         }
 
         function makeSearchQuery() {
@@ -317,7 +320,9 @@
                 });
 
                 card.on('hover:focus', function () {
-                    scroll.update($(this));
+                    try {
+                        if (scroll && scroll.update) scroll.update($(this));
+                    } catch (e) {}
 
                     var index = container.children().index(card);
                     var count = container.children().length;
@@ -334,7 +339,9 @@
                 container.append(card);
             });
 
-            scroll.update();
+            try {
+                if (scroll && scroll.update) scroll.update();
+            } catch (e) {}
 
             if (Lampa.Controller && Lampa.Controller.enable) {
                 Lampa.Controller.enable('content');
@@ -475,7 +482,9 @@
                     });
                 })
                 .on('hover:focus', function () {
-                    scroll.update($(this));
+                    try {
+                        if (scroll && scroll.update) scroll.update($(this));
+                    } catch (e) {}
                 });
 
             html.find('.eporner-btn-cat')
@@ -508,7 +517,9 @@
                     });
                 })
                 .on('hover:focus', function () {
-                    scroll.update($(this));
+                    try {
+                        if (scroll && scroll.update) scroll.update($(this));
+                    } catch (e) {}
                 });
 
             Lampa.Controller.add('content', {
@@ -535,10 +546,7 @@
             loadData(1);
         };
 
-        // Обязательный метод start для Lampa
-        this.start = function () {
-            // Метод вызывается при активации компонента
-        };
+        this.start = function () {};
 
         this.render = function () {
             return scroll.render();

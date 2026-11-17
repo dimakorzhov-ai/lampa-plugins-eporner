@@ -3,12 +3,18 @@
 
     function EpornerComponent(object) {
         var comp = this;
+        var scroll = new Lampa.Scroll({,
+            mask: true,
+            over: true
+        });
+        
         var html = $('<div>' +
-            '<div class="eporner-controls" style="padding: 1em 2em; display: flex; gap: 1em; align-items: center;">' +
-                '<div class="selector eporner-btn-search" style="background: rgba(255,255,255,0.1); padding: 0.5em 1.5em; border-radius: 4px; cursor: pointer;">🔍 Поиск</div>' +
-                '<div class="selector eporner-btn-cat" style="background: rgba(255,255,255,0.1); padding: 0.5em 1.5em; border-radius: 4px; cursor: pointer;">📂 Категория: <span id="eporner-current-cat">Все</span></div>' +
+            '<div class="eporner-controls" style="padding: 1em 2em; display: flex; gap: 1em; align-items: center; margin-bottom: 1em;">' +
+                '<div class="selector eporner-btn-search" style="background: rgba(255,255,255,0.15); padding: 0.6em 1.5em; border-radius: 6px; cursor: pointer;">🔍 Поиск</div>' +
+                '<div class="selector eporner-btn-cat" style="background: rgba(255,255,255,0.15); padding: 0.6em 1.5em; border-radius: 6px; cursor: pointer;">📂 Категория: <span id="eporner-current-cat">Все</span></div>' +
             '</div>' +
-            '<div class="empty" style="text-align: center; padding: 2em;">Загрузка каталога Eporner...</div>' +
+            '<div class="eporner-cards-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding: 0 2em 2em 2em;"></div>' +
+            '<div class="empty" style="text-align: center; padding: 3em;">Загрузка каталога Eporner...</div>' +
         '</div>');
 
         var wait_results = false;
@@ -30,7 +36,10 @@
         this.create = function () {
             comp.activity.loader(true);
             
-            html.find('.eporner-btn-search').on('hover:enter', function () {
+            scroll.body(html);
+
+            // Обработчик кнопки поиска
+            html.find('.eporner-btn-search').on('hover:enter click', function () {
                 Lampa.Input.edit({
                     title: 'Поиск видео в Eporner',
                     value: current_query,
@@ -50,7 +59,8 @@
                 });
             });
 
-            html.find('.eporner-btn-cat').on('hover:enter', function () {
+            // Обработчик кнопки категорий
+            html.find('.eporner-btn-cat').on('hover:enter click', function () {
                 var items = categories_list.map(function (cat) {
                     return {
                         title: cat.title,
@@ -99,29 +109,23 @@
                 success: function (data) {
                     comp.activity.loader(false);
                     wait_results = false;
+                    html.find('.empty').hide();
                     if (data && data.videos && data.videos.length > 0) {
-                        renderCards(data.videos, page === 1);
+                        renderCards(data.videos);
                     } else if (page === 1) {
-                        html.find('.empty').text('Видео по вашему запросу не найдены');
+                        html.find('.empty').text('Видео по вашему запросу не найдены').show();
                     }
                 },
                 error: function () {
                     comp.activity.loader(false);
                     wait_results = false;
-                    html.find('.empty').text('Ошибка загрузки данных с Eporner');
+                    html.find('.empty').text('Ошибка загрузки данных с Eporner').show();
                 }
             });
         }
 
-        function renderCards(videos, clear) {
-            if (clear) {
-                var controls = html.find('.eporner-controls');
-                html.html('');
-                html.append(controls);
-                html.append('<div class="category-full"><div class="category-full__items"></div></div>');
-            }
-
-            var items_container = html.find('.category-full__items');
+        function renderCards(videos) {
+            var items_container = html.find('.eporner-cards-list');
 
             videos.forEach(function (item) {
                 var duration_min = Math.floor(item.length_sec / 60);
@@ -130,19 +134,20 @@
                     release_year: duration_min + ' мин'
                 });
 
+                card.addClass('selector');
                 card.find('.card__img').attr('src', item.default_thumb.src);
                 
                 if (item.hd) {
                     card.find('.card__view').append('<div class="card__quality">HD</div>');
                 }
 
-                card.on('hover:enter', function () {
+                card.on('hover:enter click', function () {
                     openVideo(item);
                 });
 
                 card.on('hover:focus', function () {
                     var next_row = card.index();
-                    if (next_row >= items_container.children().length - 6 && !wait_results) {
+                    if (next_row >= items_container.children().length - 8 && !wait_results) {
                         current_page++;
                         loadData(current_page);
                     }
@@ -150,6 +155,9 @@
 
                 items_container.append(card);
             });
+
+            // Обновляем навигацию Lampa для новых карточек
+            Lampa.Controller.enable('content');
         }
 
         function openVideo(item) {
@@ -192,11 +200,11 @@
         }
 
         this.render = function () {
-            return html;
+            return scroll.render();
         };
 
         this.destroy = function () {
-            html.remove();
+            scroll.destroy();
         };
     }
 
@@ -206,7 +214,6 @@
 
         Lampa.Component.add('eporner_catalog', EpornerComponent);
 
-        // Принудительное добавление пункта в меню при любом изменении экрана
         function addMenu() {
             if ($('.menu .menu__list').length && $('.menu .menu__list').find('.eporner-menu-item').length === 0) {
                 var menu_item = $(`
@@ -218,7 +225,7 @@
                     </li>
                 `);
                 
-                menu_item.on('hover:enter', function () {
+                menu_item.on('hover:enter click', function () {
                     Lampa.Activity.push({
                         url: '',
                         title: 'Eporner',

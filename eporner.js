@@ -3,7 +3,7 @@
 
     function EpornerComponent(object) {
         var comp = this;
-        var scroll = new Lampa.Scroll({,
+        var scroll = new Lampa.Scroll({
             mask: true,
             over: true
         });
@@ -38,7 +38,6 @@
             
             scroll.body(html);
 
-            // Обработчик кнопки поиска
             html.find('.eporner-btn-search').on('hover:enter click', function () {
                 Lampa.Input.edit({
                     title: 'Поиск видео в Eporner',
@@ -59,7 +58,6 @@
                 });
             });
 
-            // Обработчик кнопки категорий
             html.find('.eporner-btn-cat').on('hover:enter click', function () {
                 var items = categories_list.map(function (cat) {
                     return {
@@ -156,7 +154,6 @@
                 items_container.append(card);
             });
 
-            // Обновляем навигацию Lampa для новых карточек
             Lampa.Controller.enable('content');
         }
 

@@ -540,13 +540,12 @@
                     }
                 }
             });
-
-            Lampa.Controller.toggle('content');
-
-            loadData(1);
         };
 
-        this.start = function () {};
+        this.start = function () {
+            Lampa.Controller.toggle('content');
+            loadData(1);
+        };
 
         this.render = function () {
             return scroll.render();

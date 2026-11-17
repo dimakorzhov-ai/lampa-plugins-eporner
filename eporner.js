@@ -206,9 +206,12 @@
                     encodeURIComponent(params[key]);
             }).join('&');
 
+            // Используем публичный прокси для обхода CORS ограничений в приложении
+            var targetUrl = 'https://www.eporner.com/api/v2/video/search/?' + queryString;
+            var proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
+
             var xhr = trackRequest($.ajax({
-                url: 'https://www.eporner.com/api/v2/video/search/?' +
-                    queryString,
+                url: proxyUrl,
                 method: 'GET',
                 dataType: 'json',
                 timeout: 20000
@@ -407,10 +410,11 @@
                 comp.activity.loader(true);
             }
 
+            var targetUrl = 'https://www.eporner.com/api/v2/video/id/?id=' + encodeURIComponent(item.id) + '&format=json';
+            var proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
+
             var xhr = trackRequest($.ajax({
-                url: 'https://www.eporner.com/api/v2/video/id/?id=' +
-                    encodeURIComponent(item.id) +
-                    '&format=json',
+                url: proxyUrl,
                 method: 'GET',
                 dataType: 'json',
                 timeout: 20000
